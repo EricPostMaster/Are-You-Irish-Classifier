@@ -1,6 +1,9 @@
 import streamlit as st
 import pickle
 import re
+from sklearn.pipeline import make_pipeline, Pipeline
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import ComplementNB
 
 # Unpickle the Pipeline object
 with open("pickled_CompNB_model.p", "rb") as p:
