@@ -13,14 +13,16 @@ with open("saved-objects/irish_log_probs.p", "rb") as p:
 
 
 def ngram_creator(term_list, n=4):
-    """Return list of ngrams for given term(s)
+    """
+    Return list of ngrams for given term(s)
+
     Parameters
-    ----------
-    term_list: list of terms to break into ngrams (e.g., ['Murphy'])
-    n: int for the length of ngrams
+        term_list: list of terms to break into ngrams (e.g., ['Murphy'])
+        n: int for the length of ngrams
+    
     Returns
-    -------
-    word_grams: list of ngrams of individual words: e.g., 4grams for 'Murphy' = [' mur','murp','urph','rphy','phy ']
+        word_grams: list of ngrams of individual words:
+            e.g., 4grams for 'Murphy' = [' mur','murp','urph','rphy','phy ']
     """
 
     # gram_string_list = []
@@ -44,7 +46,6 @@ def ngram_creator(term_list, n=4):
         # gram_string_list.append(gram_string)  # Append the ngrams for the current name as a space-separated string
     
     return word_grams #gram_string_list
-
 
 
 # App title, favicon
