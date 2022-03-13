@@ -6,10 +6,10 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import ComplementNB
 
 # Unpickle the Pipeline object
-with open("pickled_CompNB_model.p", "rb") as p:
+with open("saved-objects/pickled_CompNB_model.p", "rb") as p:
     model = pickle.load(p)
 
-with open("irish_log_probs.p", "rb") as p:
+with open("saved-objects/irish_log_probs.p", "rb") as p:
     feature_probs = pickle.load(p)
 
 
