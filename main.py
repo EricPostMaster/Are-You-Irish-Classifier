@@ -1,15 +1,43 @@
 import streamlit as st
+import pandas as pd
 import pickle
 import re
+from datetime import date
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import ComplementNB
 
-# Unpickle the Pipeline and log probabilities objects
-with open("saved-objects/pickled_CompNB_model.p", "rb") as p:
-    model = pickle.load(p)
-with open("saved-objects/irish_log_probs.p", "rb") as p:
-    feature_probs = pickle.load(p)
+from gspread_pandas import Spread,Client
+from google.oauth2 import service_account
+
+# Create a Google Authentication connection object
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+
+credentials = service_account.Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"], scopes = scope)
+client = Client(scope=scope,creds=credentials)
+workbookname = 'stored_scores'
+scores_sheet = 'scores'
+spread = Spread(workbookname,client = client)
+
+sh = client.open(workbookname)
+worksheet_list = sh.worksheets()
+
+
+# Get the sheet as dataframe
+def load_the_spreadsheet(workbookname):
+    worksheet = sh.worksheet(scores_sheet)
+    df = pd.DataFrame(worksheet.get_all_records())
+    return df
+
+# Update to Sheet
+def update_the_spreadsheet(workbookname,dataframe_master, dataframe_new):
+    col = ['score','date']
+    dataframe_master = pd.concat([dataframe_master, dataframe_new], ignore_index=True, axis=0)
+    spread.df_to_sheet(dataframe_master[col],sheet = scores_sheet,index = False)
+    return dataframe_master
+
 
 
 def ngram_creator(term_list, n=4):
@@ -46,6 +74,14 @@ def ngram_creator(term_list, n=4):
         # gram_string_list.append(gram_string)  # Append the ngrams for the current name as a space-separated string
     
     return word_grams #gram_string_list
+
+
+# Unpickle the Pipeline and log probabilities objects
+with open("saved-objects/pickled_CompNB_model.p", "rb") as p:
+    model = pickle.load(p)
+with open("saved-objects/irish_log_probs.p", "rb") as p:
+    feature_probs = pickle.load(p)
+
 
 
 # App title, favicon
@@ -100,6 +136,19 @@ if user_name:
 
         st.write(f"Your Murphy Score is: {murphy_score}/100!")
         st.write("That's definitely good enough for a drink! :shamrock: :beers:")
+
+        today = date.today()
+        df_murphy = pd.DataFrame({'score': [murphy_score],
+                                  'date' : [today]})
+        
+        # Load all previous data
+        df_all_data = load_the_spreadsheet(workbookname)
+
+        # Add the new score to the master list
+        # You can use this dataframe for data visualizations
+        df_updated_data = update_the_spreadsheet(scores_sheet,df_all_data, df_murphy)
+
+        st.dataframe(df_updated_data)
 
     # If something other than the initial empty name field has been entered but there were no ngram matches
     elif attempted_flag == 1:
