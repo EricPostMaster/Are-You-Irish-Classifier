@@ -150,7 +150,7 @@ if user_name:
         # You can use this dataframe for data visualizations
         df_updated_data = update_the_spreadsheet(scores_sheet,df_all_data, df_murphy)
 
-        st.dataframe(df_updated_data)
+        # st.dataframe(df_updated_data)
 
     # If something other than the initial empty name field has been entered but there were no ngram matches
     elif attempted_flag == 1:
