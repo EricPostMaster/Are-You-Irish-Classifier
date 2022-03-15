@@ -137,7 +137,9 @@ if user_name:
         st.write(f"Your Murphy Score is: {murphy_score}/100!")
         st.write("That's definitely good enough for a drink! :shamrock: :beers:")
 
-        today = date.today()
+        today = date.today().strftime("%m/%d/%Y")
+        # Date has to be stored as a string for now
+        # (https://stackoverflow.com/questions/69578431/how-to-fix-streamlitapiexception-expected-bytes-got-a-int-object-conver)
         df_murphy = pd.DataFrame({'score': [murphy_score],
                                   'date' : [today]})
         
