@@ -6,6 +6,7 @@ from datetime import date
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import ComplementNB
+import plotly.express as px
 
 from gspread_pandas import Spread,Client
 from google.oauth2 import service_account
@@ -149,6 +150,28 @@ if user_name:
         # Add the new score to the master list
         # You can use this dataframe for data visualizations
         df_updated_data = update_the_spreadsheet(scores_sheet,df_all_data, df_murphy)
+
+        fig = px.histogram(df_all_data
+                           ,x='score'
+                           ,nbins=12
+                           ,color_discrete_sequence=['#86CE00']
+                           ,title='Compare your Murphy Score to others:'
+                           ,labels={'score':'Murphy Scores'}
+                           ,opacity=0.7
+                           )
+        fig.update_traces(xbins=dict( # bins used for histogram
+        start=75.0,
+        end=100.0,
+        size=2.5
+        ))
+        fig.update_layout(bargap=0.2)
+        fig.add_vline(x=murphy_score
+                     ,line_dash='dash'
+                     ,annotation_text=f"Your Score: {murphy_score}"
+                     ,annotation_position='top right'
+                     ,annotation_font_size=16
+                     )
+        st.plotly_chart(fig, use_container_width=True)
 
         # st.dataframe(df_updated_data)
 
