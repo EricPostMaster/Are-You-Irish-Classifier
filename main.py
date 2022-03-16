@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import pickle
 import re
+import time
 from datetime import date
 from sklearn.pipeline import make_pipeline, Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
@@ -92,6 +93,16 @@ st.set_page_config(
 	layout="centered"
 )
 
+st.markdown(
+    """
+    <style>
+        .stProgress > div > div > div > div {
+            background-color: #86CE00;
+        }
+    </style>""",
+    unsafe_allow_html=True,
+)
+
 
 
 #########################################################################################
@@ -131,12 +142,19 @@ if user_name:
     # If a name has been entered and has at least 1 probability available from the model
     if len(ngrams_and_probs) > 0:
 
+        my_bar = st.progress(50)
+
+        for percent_complete in range(100):
+            time.sleep(0.02)
+            my_bar.progress(percent_complete + 1)
+
         user_name_avg_log_prob = sum(user_name_log_probs) / float(len(ngrams_and_probs))
 
         murphy_score = round((6.58 / user_name_avg_log_prob)*-100,2)
 
         st.write(f"Your Murphy Score is: {murphy_score}/100!")
         st.write("That's definitely good enough for a drink! :shamrock: :beers:")
+        st.write("Compare your Murphy Score to others! :point_down: :point_down: ")
 
         today = date.today().strftime("%m/%d/%Y")
         # Date has to be stored as a string for now
@@ -151,11 +169,13 @@ if user_name:
         # You can use this dataframe for data visualizations
         df_updated_data = update_the_spreadsheet(scores_sheet,df_all_data, df_murphy)
 
+
+
         fig = px.histogram(df_all_data
                            ,x='score'
                            ,nbins=12
                            ,color_discrete_sequence=['#86CE00']
-                           ,title='Compare your Murphy Score to others:'
+                           ,title='Spread of all user Murphy Scores'
                            ,labels={'score':'Murphy Scores'}
                            ,opacity=0.7
                            )
@@ -172,6 +192,9 @@ if user_name:
                      ,annotation_font_size=16
                      )
         st.plotly_chart(fig, use_container_width=True)
+
+        info_note = '<p style="font-size: 10px;">Note: No name information is stored, just your awesome Murphy Score</p>'
+        st.markdown(info_note, unsafe_allow_html=True)
 
         # st.dataframe(df_updated_data)
 
