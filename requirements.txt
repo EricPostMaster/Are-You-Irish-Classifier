@@ -3,3 +3,5 @@ streamlit==1.7.0
 gspread-pandas==3.0.4
 google-auth==2.6.0
 google-auth-oauthlib==0.5.0
+plotly==5.6.0
+plotly_express==0.4.1
