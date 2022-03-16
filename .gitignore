@@ -1,6 +1,6 @@
-# Streamlit secrets
+# Streamlit secretss
 .streamlit
-*.toml
+secrets.toml
 
 
 # Byte-compiled / optimized / DLL files
