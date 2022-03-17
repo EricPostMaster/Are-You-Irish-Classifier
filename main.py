@@ -78,12 +78,9 @@ def ngram_creator(term_list, n=4):
     return word_grams #gram_string_list
 
 
-# Unpickle the Pipeline and log probabilities objects
-with open("saved-objects/pickled_CompNB_model.p", "rb") as p:
-    model = pickle.load(p)
+# Unpickle ngram log probabilities
 with open("saved-objects/irish_log_probs.p", "rb") as p:
     feature_probs = pickle.load(p)
-
 
 
 # App title, favicon
@@ -150,7 +147,7 @@ if user_name:
 
         user_name_avg_log_prob = sum(user_name_log_probs) / float(len(ngrams_and_probs))
 
-        murphy_score = round((6.58 / user_name_avg_log_prob)*-100,2)
+        murphy_score = round((6.56 / user_name_avg_log_prob)*-100,2)
 
         st.write(f"Your Murphy Score is: {murphy_score}/100!")
         st.write("That's definitely good enough for a drink! :shamrock: :beers:")
@@ -180,8 +177,8 @@ if user_name:
                            ,opacity=0.7
                            )
         fig.update_traces(xbins=dict( # bins used for histogram
-        start=75.0,
-        end=100.0,
+        start=50.0,
+        end=105.0,
         size=2.5
         ))
         fig.update_layout(bargap=0.2)
