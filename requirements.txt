@@ -1,4 +1,4 @@
-scikit_learn==1.0.2
+scikit-learn==1.0.2
 streamlit==1.7.0
 gspread-pandas==3.0.4
 google-auth==2.6.0
